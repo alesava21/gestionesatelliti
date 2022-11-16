@@ -113,4 +113,11 @@ public class SatelliteServiceImpl implements SatelliteService {
 		return repository.findByStatoLikeAndDataDiLancioBefore(stato, tenYearsAgoDate1);
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public List<Satellite> listAllByStatoNotLikeAndDataDiRientroIsNullOrDataDiRientroAfter() {
+
+		return repository.findAllByStatoNotLikeAndDataDiRientroIsNull(StatoSatellite.DISATTIVATO);
+	}
+
 }

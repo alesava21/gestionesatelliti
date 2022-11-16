@@ -135,15 +135,14 @@ public class SatelliteController {
 	}
 
 	@PostMapping("/executeDelete")
-	public String confirm(@RequestParam Long idSatellite, Satellite satellite, Model model,
+	public String confirm(@RequestParam Long idSatellite, Model model,
 			RedirectAttributes redirectAttrs) {
 		
-		Satellite satellite2= satelliteService.caricaSingoloElemento(idSatellite);
+		Satellite satellite= satelliteService.caricaSingoloElemento(idSatellite);
 		
-		if (satellite.getStato() == StatoSatellite.FISSO && satellite.getStato() == StatoSatellite.IN_MOVIMENTO) {
-			model.addAttribute("errorMessage",
-					"ATTENZIONE, devi inserire uno stato se il satellite e gia stato lanciato");
-			return "satellite/delete";
+		if(satellite.getDataDiLancio() != null && satellite.getDataDiRientro() == null &&satellite.getStato()!=StatoSatellite.DISATTIVATO) {
+			redirectAttrs.addFlashAttribute("erroreMessage", "ATTENZIONE ERRORE DATE");
+		    return "redirect:/satellite";
 		}
 
 		satelliteService.rimuovi(idSatellite);
@@ -279,5 +278,30 @@ public class SatelliteController {
 		mv.setViewName("satellite/list");
 		return mv;
 	}
+	
+	@GetMapping("/disabilitaTutto")
+	public ModelAndView disabilitaTutto() {
+		ModelAndView mv = new ModelAndView();
+		List<Satellite> result = satelliteService.listAllByStatoNotLikeAndDataDiRientroIsNullOrDataDiRientroAfter();
+		List<Satellite> listAll = satelliteService.listAllElements();
+		mv.addObject("satellite_listAll_attribute",listAll);
+		mv.addObject("satellite_list_attribute",result);
+		mv.setViewName("satellite/confermaDisabilita");
+		return mv;
+	}
+	
+	@PostMapping("/confermaTuttoDisabilita")
+	public String disabilita(RedirectAttributes redirectAttrs) {
+		List<Satellite> result = satelliteService.listAllByStatoNotLikeAndDataDiRientroIsNullOrDataDiRientroAfter();
+		for (Satellite satelliteItem : result) {
+			satelliteItem.setStato(StatoSatellite.DISATTIVATO);
+			satelliteItem.setDataDiRientro(new Date());
+		satelliteService.aggiorna(satelliteItem);
+		}
+		redirectAttrs.addFlashAttribute("successMessage", "Operazione eseguita correttamente");
+		return "redirect:/home";
+
+	}
+	
 
 }

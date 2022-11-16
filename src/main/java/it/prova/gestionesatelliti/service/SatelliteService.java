@@ -1,8 +1,10 @@
 package it.prova.gestionesatelliti.service;
 
+import java.util.Date;
 import java.util.List;
 
 import it.prova.gestionesatelliti.model.Satellite;
+import it.prova.gestionesatelliti.model.StatoSatellite;
 
 
 public interface SatelliteService {
@@ -24,5 +26,8 @@ public interface SatelliteService {
 	public List<Satellite> listAllDeactivatedButNotReEntered();
 
 	public List<Satellite> listAllinOrbitButFixed();
+	
+	List<Satellite> listAllByStatoNotLikeAndDataDiRientroIsNullOrDataDiRientroAfter();
+
 
 }
