@@ -76,7 +76,7 @@
 							
 								<fmt:formatDate pattern='yyyy-MM-dd' var="parsedDate" type='date' value='${insert_satellite_attr.dataDiLancio}' />
 								<div class="col-md-3">
-									<label for="dataLancio" class="form-label">Data di Lancio <span class="text-danger">*</span></label>
+									<label for=dataDiLancio class="form-label">Data di Lancio <span class="text-danger">*</span></label>
                         			<spring:bind path="dataDiLancio">
 	                        		<input class="form-control ${status.error ? 'is-invalid' : ''}" id="dataDiLancio" type="date" placeholder="dd/MM/yy"
 	                            		title="formato : gg/mm/aaaa"  name="dataDiLancio" required 

@@ -70,6 +70,7 @@ public class SatelliteController {
 				&& (satellite.getStato() == null || satellite.getStato() != StatoSatellite.DISATTIVATO)) {
 			model.addAttribute("errorMessage",
 					"ATTENZIONE, lo stato deve essere \"DISABILITATO\" se si inserisce sia una data di lancio che una di rientro");
+//			result.rejectValue("DataDiLancio", "satellite.dataDiLancio.mustBe.piuPiccolo");
 			return "satellite/insert";
 		}
 
@@ -136,6 +137,14 @@ public class SatelliteController {
 	@PostMapping("/executeDelete")
 	public String confirm(@RequestParam Long idSatellite, Satellite satellite, Model model,
 			RedirectAttributes redirectAttrs) {
+		
+		Satellite satellite2= satelliteService.caricaSingoloElemento(idSatellite);
+		
+		if (satellite.getStato() == StatoSatellite.FISSO && satellite.getStato() == StatoSatellite.IN_MOVIMENTO) {
+			model.addAttribute("errorMessage",
+					"ATTENZIONE, devi inserire uno stato se il satellite e gia stato lanciato");
+			return "satellite/delete";
+		}
 
 		satelliteService.rimuovi(idSatellite);
 		redirectAttrs.addFlashAttribute("successMessage", "Operazione eseguita correttamente");
@@ -243,6 +252,34 @@ public class SatelliteController {
 			satelliteService.aggiorna(satellite);
 		}
 		return "redirect:/satellite";
+	}
+	@GetMapping("/launchMoreThanTwoYears")
+	public ModelAndView launchMoreThanTwoYears() {
+		ModelAndView mv = new ModelAndView();
+		List<Satellite> results = satelliteService.listAllLaunchMoreThanTwoYears();
+		mv.addObject("satellite_list_attribute", results);
+		mv.setViewName("satellite/list");
+		return mv;
+	}
+
+	// Query 2
+	@GetMapping("/deactivatedButNotReEntered")
+	public ModelAndView deactivatedButNotReEntered() {
+		ModelAndView mv = new ModelAndView();
+		List<Satellite> results = satelliteService.listAllDeactivatedButNotReEntered();
+		mv.addObject("satellite_list_attribute", results);
+		mv.setViewName("satellite/list");
+		return mv;
+	}
+
+	// Query3
+	@GetMapping("/inOrbitButFixed")
+	public ModelAndView inOrbitButFixed() {
+		ModelAndView mv = new ModelAndView();
+		List<Satellite> results = satelliteService.listAllinOrbitButFixed();
+		mv.addObject("satellite_list_attribute", results);
+		mv.setViewName("satellite/list");
+		return mv;
 	}
 
 }
