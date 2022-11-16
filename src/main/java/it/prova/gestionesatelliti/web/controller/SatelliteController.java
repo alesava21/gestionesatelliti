@@ -262,7 +262,6 @@ public class SatelliteController {
 		return mv;
 	}
 
-	// Query 2
 	@GetMapping("/deactivatedButNotReEntered")
 	public ModelAndView deactivatedButNotReEntered() {
 		ModelAndView mv = new ModelAndView();
@@ -272,7 +271,6 @@ public class SatelliteController {
 		return mv;
 	}
 
-	// Query3
 	@GetMapping("/inOrbitButFixed")
 	public ModelAndView inOrbitButFixed() {
 		ModelAndView mv = new ModelAndView();
